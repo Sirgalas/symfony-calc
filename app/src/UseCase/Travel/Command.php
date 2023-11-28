@@ -20,7 +20,6 @@ class Command extends AbstractCommand
     #[
         Groups(['default']),
         OA\Property(description: "Дата рождения", type: "string"),
-        Assert\Date,
         Assert\NotBlank
     ]
     public string $birthday;
@@ -28,12 +27,13 @@ class Command extends AbstractCommand
     #[
         Groups(['default']),
         OA\Property(description: "Дата путешествия", type: "string"),
-        Assert\Date
     ]
-    public ?string $date_travel;
+    public ?string $travel_date = null;
 
     public function setPrice($item): void
     {
         $this->price = (string) $item;
     }
+
+
 }

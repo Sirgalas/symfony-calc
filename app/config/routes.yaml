@@ -3,3 +3,11 @@ controllers:
         path: ../src/Controller/
         namespace: App\Controller
     type: attribute
+calc_api:
+    resource: ../src/Controller/Calc
+    type: annotation
+    prefix: /api/calc
+travel_api:
+    resource: ../src/Controller/Travel
+    type: annotation
+    prefix: /api/travel

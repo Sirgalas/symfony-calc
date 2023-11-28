@@ -16,5 +16,5 @@ class ResponseCommand extends AbstractCommand
         OA\Property(description: 'результат', type: 'integer', default: 10000),
         Assert\NotBlank
     ]
-    public int $result;
+    public string $result;
 }

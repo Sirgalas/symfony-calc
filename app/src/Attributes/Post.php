@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Controller\Attributes;
+namespace App\Attributes;
 
 
 use Symfony\Component\Routing\Annotation\Route;

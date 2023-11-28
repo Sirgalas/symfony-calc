@@ -5,11 +5,12 @@ declare(strict_types=1);
 namespace App\Abstracts;
 
 use App\Abstracts\Present\Presenter;
+use App\Exceptions\ApiProblemException;
 use App\Validator\ValidationProblem;
-use Phpro\ApiProblem\Exception\ApiProblemException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController as SymfonyAbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
@@ -17,11 +18,12 @@ class AbstractController extends SymfonyAbstractController
 {
 
     public function __construct(
-        private readonly SerializerInterface $serializer,
         private readonly Presenter $presenter,
+        private readonly SerializerInterface $serializer,
         private readonly ValidatorInterface $validator
     ) {
     }
+
     /** {@inheritdoc} */
     protected function json(
         mixed $data = [],
@@ -51,6 +53,7 @@ class AbstractController extends SymfonyAbstractController
             true
         );
     }
+
 
     protected function validate(AbstractCommand $command): void
     {

@@ -2,15 +2,33 @@
 
 namespace App\Services\Enum;
 
-enum EnumService
+class EnumService
 {
-    public function returnValue(array $cases, string $search): string
+    public function returnValue(array $cases, string $search): ?string
     {
         $returnArray = array_filter(
             array_map(
                 function ($case) use ($search) {
                     if($case->value == $search){
-                        return $case->discount();
+                        return $case->choice();
+                    }
+                    return null;
+                },
+                $cases
+            ),
+            function ($element) {
+                return !empty($element);
+            }
+        );
+        return array_shift($returnArray );
+    }
+    public function returnChildValue(array $cases, string $search): ?string
+    {
+        $returnArray = array_filter(
+            array_map(
+                function ($case) use ($search) {
+                    if($case->value >= $search){
+                        return $case->choice();
                     }
                     return null;
                 },

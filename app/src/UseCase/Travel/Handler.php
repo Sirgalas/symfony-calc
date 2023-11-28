@@ -30,21 +30,29 @@ class Handler
         $now = new \DateTimeImmutable();
         $yearsOld = $birthday->diff($now)->format('%Y');
         $this->enumService->returnValue(ChildrenDiscountEnum::cases(),$yearsOld);
-        $percentage = $this->enumService->returnValue(ChildrenDiscountEnum::cases(),$yearsOld);
+        $percentage = $this->enumService->returnChildValue(ChildrenDiscountEnum::cases(),$yearsOld);
+        if(!$percentage) {
+            return new ResponseCommand([
+                'result' => $command->price,
+                'travel_date' => $command->travel_date ?? date('d.m.Y')
+            ]);
+        }
+
         $percentageSum = $this->getSumSixOld(
             $yearsOld,
             $this->calculationService->arithmetic(new CalculationPercentageSum(),$command->price,$percentage)
         );
 
+
         return new ResponseCommand([
             'result' => $this->calculationService->arithmetic(new CalculationSubtraction(),$command->price,$percentageSum),
-            'travel_date' => $command->date_travel
+            'travel_date' => $command->travel_date ?? date('d.m.Y')
         ]);
     }
 
     private function getSumSixOld(string $yearsOld, string $percentageSum): string
     {
-        if($yearsOld != ChildrenDiscountEnum::SIX->value) {
+        if($yearsOld < ChildrenDiscountEnum::THREE->value || $yearsOld > ChildrenDiscountEnum::SIX->value) {
             return $percentageSum;
         }
         if(self::MAX_DISCOUNT > filter_var($percentageSum, FILTER_VALIDATE_INT)) {

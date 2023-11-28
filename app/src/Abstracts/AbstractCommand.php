@@ -46,18 +46,6 @@ abstract class AbstractCommand
         }
     }
 
-    final public function getArray(string | array $jsonOrArray): array
-    {
-        return \is_string($jsonOrArray) ? $this->getArrayFromJson($jsonOrArray) : $jsonOrArray;
-    }
-
-
-    final public function getObjectArray(string | array $jsonOrArray): \ArrayObject
-    {
-        return \is_string($jsonOrArray)
-            ? new \ArrayObject($this->getArrayFromJson($jsonOrArray))
-            : new \ArrayObject($jsonOrArray);
-    }
 
     private function getArrayFromJson(string $value): array
     {

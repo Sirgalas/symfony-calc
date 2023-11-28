@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Controller\Travel;
 
-use App\Controller\Attributes\Get;
+use App\Attributes\Get;
 use App\Abstracts\AbstractController;
+use App\Attributes\Post;
+use App\Exceptions\ApiProblemException;
 use App\UseCase\Travel\Command;
 use App\UseCase\Travel\Handler;
 use Nelmio\ApiDocBundle\Annotation\Model;
@@ -16,8 +18,8 @@ use OpenApi\Attributes as OA;
 
 
 #[
-    Get(
-        path: '/calc/travel',
+    Post(
+        path: '/calc',
         name: self::class,
     ),
     OA\Post(
@@ -40,8 +42,13 @@ class Controller extends AbstractController
     /** Сделать расчет. */
     public function __invoke(Request $request, Handler $handler): JsonResponse
     {
-        $command = new Command($request->request->all());
-        $this->validate($command);
-        return $this->json($handler->handle($command));
+        try{
+            $command = new Command($request->request->all());
+            $this->validate($command);
+            return $this->json(data: $handler->handle($command));
+        } catch (ApiProblemException $e) {
+            return $this->json(errors: [$e->getMessage()],status: Response::HTTP_BAD_REQUEST);
+        }
+
     }
 }
