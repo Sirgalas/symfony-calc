@@ -1,0 +1,32 @@
+#!/usr/bin/env php
+<?php
+
+$configDir = dirname(__DIR__, 2) . '/app/.php-cs-fixer.dist.php';
+
+// получаем список имен файлов из staging области
+exec('git diff --cached --name-only', $stagedFiles);
+
+$fixedFiles = [];
+foreach ($stagedFiles as $fileName) {
+    // проверяем только .php файлы
+    // is_file - необходимо чтобы избежать проблем с переименованными и удаленными файлами, добавленными в комит.
+
+    if (preg_match('/\.php$/', $fileName) && is_file($fileName)) {
+        exec("app/vendor/bin/php-cs-fixer --config={$configDir} --dry-run fix {$fileName} -q", $output, $dryRunResultCode);
+        if (0 !== $dryRunResultCode) {
+            $fixedFiles[] = $fileName;
+
+            exec("app/vendor/bin/php-cs-fixer --config={$configDir} fix {$fileName} -q", $output, $resultCode);
+            exec("git add {$fileName}");
+        }
+    }
+}
+
+if (count($fixedFiles)) {
+    echo sprintf("Code style fixes were applied to the following files:\n\n%s\n\nFiles were added to the commit after fixes.\n\n", implode("\n", $fixedFiles));
+    // disallow commit
+    exit(1);
+}
+
+// allow commit
+exit(0);

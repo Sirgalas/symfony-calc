@@ -1,0 +1,26 @@
+nelmio_api_doc:
+  areas:
+    path_patterns: # an array of regexps (document only routes under /api, except /api/doc)
+      - ^/api(?!/doc$)
+    documentation:
+      openapi: "3.0.0"
+      info:
+        title: Документация к api
+        version: v1
+        description: |
+          Hello Nelmio api doc world.
+  documentation:
+    components:
+      schemas:
+        empty_response:
+          type: object
+          required: [ data, meta, error ]
+          properties:
+            data:
+              type: object
+            meta:
+              type: object
+            error:
+              type: array
+              items:
+                type: string
