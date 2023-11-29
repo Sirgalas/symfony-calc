@@ -48,6 +48,8 @@ class Controller extends AbstractController
             return $this->json(data: $handler->handle($command));
         } catch (ApiProblemException $e) {
             return $this->json(errors: [$e->getMessage()],status: Response::HTTP_BAD_REQUEST);
+        } catch (\DivisionByZeroError $e) {
+            return $this->json(errors: [$e->getMessage()], status: Response::HTTP_BAD_REQUEST);
         }
 
     }
